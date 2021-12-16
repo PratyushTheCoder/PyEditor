@@ -1,17 +1,35 @@
 from tkinter import *
-from subprocess import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
 
+from subprocess import *
+
+import os
+import json
+
+print("This PyEditor Terminal, inputs are taken here")
 class App():
     def __init__(self,app):
+        if os.path.exists(os.getcwd()+ "/settings.json"):
+            with open("./settings.json") as file:
+                configData=json.load(file)
+        else:
+             configTemplate={
+                 "font":"cascadia code",
+                 "defaultFontSize":16,
+                 "author":"Pratyush Jha"
+             }
+             with open(os.getcwd()+"/settings.json", "w+") as file:
+                 json.dump(configTemplate,file)
+                 print("Settings File created please run the app again")       
         self.app=app
         self.app.title("PyEditor")
         self.app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0")
 
         #Variables
         self.file_path=''
-        self.default_font_size=16
+        self.default_font_size=configData["defaultFontSize"]
+        self.font=configData["font"]
         
         # Main Frame
         self.mainFrame=Frame(background='black',bd=5,relief=SOLID)
@@ -64,7 +82,7 @@ class App():
 
         scrollY=Scrollbar(self.editFrame,orient=VERTICAL,background='black')
         scrollY.pack(side=RIGHT,fill=Y)
-        self.textFeild=Text(self.editFrame,background='black',foreground='white',font=('cascadia code',16,'bold'),insertbackground='white',yscrollcommand=scrollY.set)
+        self.textFeild=Text(self.editFrame,background='black',foreground='white',font=(self.font,self.default_font_size,'bold'),insertbackground='white',yscrollcommand=scrollY.set)
         scrollY.config(command=self.textFeild.yview)
         self.textFeild.pack(expand=True,fill=BOTH)
         # Output Frame
@@ -73,7 +91,7 @@ class App():
 
         scrollY=Scrollbar(self.outputFrame,orient=VERTICAL)
         scrollY.pack(side=RIGHT,fill=Y)
-        self.outputFeild=Text(self.outputFrame,background='black',foreground='white',font=('cascadia code',16,'bold'),insertbackground='white',yscrollcommand=scrollY.set)
+        self.outputFeild=Text(self.outputFrame,background='black',foreground='white',font=(self.font,self.default_font_size,'bold'),insertbackground='white',yscrollcommand=scrollY.set)
         scrollY.config(command=self.outputFeild.yview)
         self.outputFeild.pack(expand=True,fill=BOTH)
         
@@ -112,10 +130,10 @@ class App():
 
     def change_fontsize_inc(self,event=None):
         self.default_font_size+=1
-        self.textFeild.config(font=('cascadia code',self.default_font_size,'bold'))
+        self.textFeild.config(font=(self.font,self.default_font_size,'bold'))
     def change_fontsize_dec(self,event=None):
         self.default_font_size-=1
-        self.textFeild.config(font=('cascadia code',self.default_font_size,'bold'))
+        self.textFeild.config(font=(self.font,self.default_font_size,'bold'))
 
     def save_as_file(self,event=None):
         path=asksaveasfilename(filetypes=[("Python Program","*.py"),("All Files",'*.*')],defaultextension=('.py'))
@@ -143,6 +161,7 @@ class App():
             self.textFeild.delete('1.0',END)
             self.outputFeild.delete('1.0',END)
             self.textFeild.insert('1.0',data)
+            self.app.title(self.file_path+" - PyEditor")
         else:
             showerror('Error',"There was an error opening the file")    
     def new_file(self,event=None):
