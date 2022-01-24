@@ -17,7 +17,7 @@ class App():
              configTemplate={
                  "font":"cascadia code",
                  "defaultFontSize":16,
-                 "author":"Pratyush Jha"
+                 "author":"Author Name Here"
              }
              with open(os.getcwd()+"/settings.json", "w+") as file:
                  json.dump(configTemplate,file)
