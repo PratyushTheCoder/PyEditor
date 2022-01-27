@@ -5,3 +5,5 @@ You can run programs in the editor using the "Run Program Button"<br>
 Increase & Decrease font size<br>
 Change theme<br>
 
+Feel free to contribute
+
