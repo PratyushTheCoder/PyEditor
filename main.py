@@ -178,7 +178,7 @@ class App():
         if self.file_path == '':
             showerror('Error',"There are either no files opened or the opened file is not saved")
         else:
-           command=f'python "{self.file_path}"'    
+           command=f'python3.9 "{self.file_path}"'    
            run=Popen(command,stdout=PIPE,stderr=PIPE,shell=True)
            output,error=run.communicate()
            self.outputFeild.delete('1.0',END)
